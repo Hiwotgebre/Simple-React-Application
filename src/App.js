@@ -1,24 +1,30 @@
-function Header() {
-  return (<h1>Simple React Application</h1>);
-}
+import { useState, useEffect } from 'react';
+import MovieDisplay from './Components/MovieDisplay';
+import Form from './Components/Form';
 
-function Content(props) {
-  return (<p style={{color: props.color}}>{props.text}</p>);
-}
-
-function Footer() {
-  return (<h1>Created by Me, of course.</h1>);
-}
 
 function App() {
+  const [movie, setMovie] = useState(null);
+
+  const getMovie = async (searchTerm) => {
+    const apiKey = "1410dd36"; // Use my API key
+    const url = `http://www.omdbapi.com/?apikey=${apiKey}&t=${searchTerm}`;
+    const response = await fetch(url);
+    const data = await response.json();
+    setMovie(data);
+  };
+
+  //useEffect to fetch initial movie data when the component mounts
+  useEffect(() => {
+    getMovie("Clueless");
+  }, []);
+
+
   return (
-    <>
-      <Header />
-      <Content color="blue" text="This is my first React Application!" />
-      <Content color="red" text="Wish me luck..." />
-      <Content color="green" text="I think I've got it!" />
-      <Footer />
-    </>
+    <div className='App'>
+      <Form movieSearch={getMovie} />
+      <MovieDisplay movie={movie} />
+    </div>
   );
 }
 
